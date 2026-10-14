@@ -1,0 +1,9 @@
+QUICK START (read README.md for full instructions)
+
+1. This is a WEBSITE PROJECT, not a single offline HTML file.
+2. Upload all files in this folder to a GitHub repository.
+3. Deploy the repo as a Node Web Service on Render.
+4. Set OPENAI_API_KEY as a secret environment variable on Render.
+5. Attach persistent disk mounted at /var/data and set DATA_DIR=/var/data.
+6. Deploy. The URL becomes your shared website.
+7. Do not share your API key. API usage can cost money.

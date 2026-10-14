@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: cbse-ai-test-portal
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/status
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-4.1-mini
+      - key: DATA_DIR
+        value: /var/data
+    # For persistent shared results, attach a persistent disk in Render settings:
+    # mountPath: /var/data
+    # sizeGB: 1

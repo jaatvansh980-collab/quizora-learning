@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CBSE AI Test Portal</title>
+<style>
+:root{--navy:#0c1e3b;--blue:#2563eb;--pale:#eaf1ff;--ink:#182230;--muted:#667085;--line:#d9e1ee;--green:#16834a;--red:#be3030}
+*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial}header{padding:25px 16px;background:linear-gradient(125deg,#0c1e3b,#2256b6);color:white}header .wrap,main{max-width:1040px;margin:auto}h1{font-size:clamp(25px,4vw,38px);line-height:1.15;margin:0 0 8px}header p{margin:0;color:#d9e7ff}.brand{font-size:12px;letter-spacing:2px;font-weight:900;color:#a9c8ff;text-transform:uppercase}main{padding:18px 13px 40px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}.tab{background:#e2e8f0;color:#23314a}.tab.active{background:var(--blue);color:white}.card{background:white;border:1px solid #e8edf5;border-radius:17px;padding:19px;margin:13px 0;box-shadow:0 7px 24px #132b4b0b}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:13px}label{display:block;font-weight:800;margin-bottom:6px}select,input{width:100%;border:1px solid #cbd5e1;border-radius:10px;background:white;padding:12px;font:inherit}button{border:0;border-radius:10px;padding:11px 15px;background:var(--blue);color:white;font:inherit;font-weight:800;cursor:pointer}button:disabled{opacity:.4;cursor:not-allowed}.secondary{background:#e8edf5;color:#24344d}.muted{color:var(--muted);font-size:13px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.badge{display:inline-block;padding:4px 9px;background:#eaf1ff;color:#1d4ed8;border-radius:99px;font-size:12px;font-weight:800;margin:2px}.hidden{display:none!important}.status{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f1f5f9;color:#344054}.status.error{background:#fff0f0;color:#9f2424}.status.ok{background:#e8fff1;color:#166534}.option{width:100%;text-align:left;margin:7px 0;background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:600}.option.selected{background:#dbeafe;border:2px solid #2563eb;color:#1d4ed8}.progress{height:8px;border-radius:99px;background:#e2e8f0;overflow:hidden;margin:12px 0}.progress span{display:block;background:#2563eb;height:100%;width:0}.palette{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin:14px 0}.pal{padding:8px 0;background:#e2e8f0;color:#344054}.pal.done{background:#bfdbfe;color:#1d4ed8}.pal.current{outline:3px solid #2563eb}.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:9px}.stat{padding:13px;background:#f1f5f9;border-radius:12px}.stat strong{display:block;font-size:25px}.good{color:var(--green);font-weight:800}.bad{color:var(--red);font-weight:800}table{border-collapse:collapse;width:100%;min-width:680px}td,th{padding:10px;border-bottom:1px solid #e5eaf1;text-align:left;vertical-align:top;font-size:13px}.scroll{overflow:auto}.spinner{display:inline-block;width:15px;height:15px;border:2px solid #ffffff70;border-top-color:white;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:7px}@keyframes spin{to{transform:rotate(360deg)}}footer{text-align:center;color:#7a8495;font-size:12px;padding:20px}
+@media(max-width:520px){.card{padding:14px}.palette{grid-template-columns:repeat(6,1fr)}header{padding:22px 14px}}
+@media print{header,.tabs,#setup,#leaderboardCard,.actions,footer{display:none!important}body{background:white}.card{box-shadow:none;border:0}#results{display:block!important}}
+</style></head><body>
+<header><div class="wrap"><div class="brand">Smart practice · Instant evaluation</div><h1>CBSE AI Test Portal</h1><p>Choose a class, subject and chapter. The AI builds a fresh MCQ practice test automatically.</p></div></header>
+<main>
+<div class="tabs"><button class="tab active" data-tab="testView">📝 Take a test</button><button class="tab" data-tab="leaderboardView">🏆 Shared leaderboard</button></div>
+<section id="testView">
+<div class="card" id="setup">
+<div class="row"><div><h2 style="margin:0 0 5px">Create your test</h2><div class="muted">No teacher question entry required. Questions are generated when you start.</div></div><span class="badge" id="aiBadge">Checking AI…</span></div>
+<div class="grid" style="margin-top:17px">
+<div><label for="student">Student name / nickname</label><input id="student" maxlength="60" placeholder="e.g. Rahul"></div>
+<div><label for="grade">Class</label><select id="grade"></select></div>
+<div><label for="subject">Subject</label><select id="subject"></select></div>
+<div><label for="chapter">Chapter / unit</label><select id="chapter"></select></div>
+<div><label for="count">Number of MCQs</label><select id="count"><option>10</option><option selected>20</option><option>30</option><option>40</option><option>50</option></select></div>
+<div><label for="minutes">Time limit</label><select id="minutes"><option value="0">No timer</option><option value="10">10 minutes</option><option value="20">20 minutes</option><option value="30">30 minutes</option><option value="45">45 minutes</option><option value="60">60 minutes</option></select></div>
+</div>
+<div class="row" style="margin-top:17px"><div class="muted">🔵 Selected option turns blue · Instant score · Explanations after submit</div><button id="start">✨ Generate & start</button></div>
+<div id="setupStatus" class="status hidden"></div>
+</div>
+<div class="card hidden" id="exam">
+<div class="row"><div><strong id="testTitle"></strong><div class="muted" id="testMeta"></div></div><span class="badge" id="timer">Untimed</span></div>
+<div class="progress"><span id="progress"></span></div><div class="row"><strong id="counter"></strong><span class="muted" id="answered"></span></div>
+<h3 id="question" style="font-size:20px;line-height:1.45"></h3><div id="options"></div>
+<div class="row actions" style="margin-top:15px"><button class="secondary" id="prev">← Previous</button><div><button class="secondary" id="mark">⚑ Review</button> <button id="next">Next →</button></div></div>
+<div class="palette" id="palette"></div><div class="row actions"><span class="muted">Blue = answered · outlined = current</span><button id="submit">Submit test</button></div>
+</div>
+<div class="card hidden" id="results"><h2>📊 Your result</h2><p id="resultLine"></p><div class="stats" id="stats"></div><div class="row actions" style="margin:16px 0"><button class="secondary" id="print">Print / Save PDF</button><button id="another">Take another test</button></div><h3>Answer review</h3><div class="scroll"><table><thead><tr><th>#</th><th>Question / explanation</th><th>Your answer</th><th>Correct answer</th><th>Result</th></tr></thead><tbody id="review"></tbody></table></div></div>
+</section>
+<section id="leaderboardView" class="hidden"><div class="card" id="leaderboardCard"><div class="row"><div><h2 style="margin:0">🏆 Shared leaderboard</h2><p class="muted">Results saved on the website server. Top 100 results are shown.</p></div><div style="min-width:150px"><label for="filterGrade">Filter class</label><select id="filterGrade"><option value="">All classes</option></select></div></div><div id="leaderStatus" class="status">Loading results…</div><div class="scroll"><table><thead><tr><th>Rank</th><th>Student</th><th>Class</th><th>Subject / chapter</th><th>Score</th><th>%</th><th>Date</th></tr></thead><tbody id="leaderRows"></tbody></table></div></div></section>
+<div class="card"><h3 style="margin-top:0">Important note</h3><p class="muted">AI-generated practice questions can sometimes be incorrect. This is not an official CBSE paper and cannot guarantee exam predictions. The built-in chapter catalogue is a starter list and may vary from the current CBSE/NCERT session; verify it with your school. Do not enter passwords or sensitive personal information.</p></div>
+</main><footer>CBSE AI Test Portal · Practice tool · Verify important answers with NCERT</footer>
+<script>
+let syllabus={},questions=[],answers=[],marked=[],current=0,startedAt=0,seconds=0,tick=null,activeTest=null;
+const $=id=>document.getElementById(id);
+function status(el,msg,type=""){el.textContent=msg;el.className="status "+type;}
+async function init(){
+ try{const [s,st]=await Promise.all([fetch('/api/syllabus').then(r=>r.json()),fetch('/api/status').then(r=>r.json())]);syllabus=s;
+ $('grade').innerHTML=Object.keys(syllabus).map(g=>`<option value="${g}">Class ${g}</option>`).join('');
+ $('filterGrade').innerHTML+=[6,7,8,9,10,11,12].map(g=>`<option value="${g}">Class ${g}</option>`).join('');
+ populateSubjects();
+ $('aiBadge').textContent=st.aiReady?'AI ready':'AI setup required';$('aiBadge').style.background=st.aiReady?'#dcfce7':'#fee2e2';$('aiBadge').style.color=st.aiReady?'#166534':'#991b1b';
+ if(!st.aiReady)status($('setupStatus'),'AI has not been connected on the server yet. The site owner must add OPENAI_API_KEY in hosting settings. The key must never be entered on this page.','error');
+ }catch(e){status($('setupStatus'),'Could not load the portal. Please refresh or contact the site owner.','error')}
+}
+function populateSubjects(){let g=$('grade').value;let subs=Object.keys(syllabus[g]||{});$('subject').innerHTML=subs.map(s=>`<option>${s}</option>`).join('');populateChapters();}
+function populateChapters(){let ch=(syllabus[$('grade').value]||{})[$('subject').value]||[];$('chapter').innerHTML=ch.map(c=>`<option>${c}</option>`).join('');}
+$('grade').onchange=populateSubjects;$('subject').onchange=populateChapters;
+async function startTest(){
+ $('start').disabled=true;$('start').innerHTML='<span class="spinner"></span>Generating…';status($('setupStatus'),'AI is preparing your questions. This may take a few seconds.');
+ try{
+ const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({grade:$('grade').value,subject:$('subject').value,chapter:$('chapter').value,count:Number($('count').value)})});
+ const data=await r.json();if(!r.ok)throw new Error(data.error||'Could not generate test.');
+ activeTest=data;questions=data.questions;answers=Array(questions.length).fill(null);marked=Array(questions.length).fill(false);current=0;startedAt=Date.now();
+ $('setup').classList.add('hidden');$('results').classList.add('hidden');$('exam').classList.remove('hidden');$('testTitle').textContent=`Class ${data.grade} · ${data.subject} · ${data.chapter}`;$('testMeta').textContent=`${questions.length} AI-generated MCQs · 1 mark each`;
+ if(tick)clearInterval(tick);let mins=Number($('minutes').value);if(mins){seconds=mins*60;showTimer();tick=setInterval(()=>{seconds--;showTimer();if(seconds<=0){clearInterval(tick);finish(true)}},1000)}else $('timer').textContent='Untimed';renderQuestion();
+ }catch(e){status($('setupStatus'),e.message,'error')}
+ finally{$('start').disabled=false;$('start').textContent='✨ Generate & start'}
+}
+function showTimer(){$('timer').textContent=`⏱ ${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;$('timer').style.background=seconds<60?'#fee2e2':'#eaf1ff';}
+function renderQuestion(){
+ const q=questions[current];$('counter').textContent=`Question ${current+1} of ${questions.length}`;$('answered').textContent=`Answered ${answers.filter(x=>x!==null).length}/${questions.length}`;$('progress').style.width=(answers.filter(x=>x!==null).length/questions.length*100)+'%';$('question').textContent=q.question;
+ $('options').innerHTML=q.options.map((o,i)=>`<button class="option ${answers[current]===i?'selected':''}" data-i="${i}">${String.fromCharCode(65+i)}. ${escapeHtml(o)}</button>`).join('');
+ document.querySelectorAll('.option').forEach(b=>b.onclick=()=>{answers[current]=Number(b.dataset.i);renderQuestion()});
+ $('prev').disabled=current===0;$('next').textContent=current===questions.length-1?'Finish →':'Next →';$('mark').textContent=marked[current]?'⚑ Unmark review':'⚑ Review';
+ $('palette').innerHTML=questions.map((q,i)=>`<button class="pal ${answers[i]!==null?'done':''} ${i===current?'current':''}" data-q="${i}">${i+1}${marked[i]?'⚑':''}</button>`).join('');document.querySelectorAll('.pal').forEach(b=>b.onclick=()=>{current=Number(b.dataset.q);renderQuestion()});
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+$('prev').onclick=()=>{if(current>0){current--;renderQuestion()}};$('next').onclick=()=>{if(current<questions.length-1){current++;renderQuestion()}else finish(false)};$('mark').onclick=()=>{marked[current]=!marked[current];renderQuestion()};$('submit').onclick=()=>finish(false);
+async function finish(auto=false){
+ if(!auto&&!confirm('Submit this test?'))return;if(tick)clearInterval(tick);
+ let correct=0,wrong=0;questions.forEach((q,i)=>{if(answers[i]===q.correctIndex)correct++;else if(answers[i]!==null)wrong++});let unanswered=questions.length-correct-wrong,percent=Math.round(correct/questions.length*100),durationSeconds=Math.round((Date.now()-startedAt)/1000);
+ $('exam').classList.add('hidden');$('results').classList.remove('hidden');$('resultLine').textContent=`${$('student').value.trim()||'Student'}, ${auto?'time is up — test auto-submitted.':'your test is submitted.'}`;$('stats').innerHTML=`<div class="stat">Score<strong>${correct}/${questions.length}</strong></div><div class="stat">Percentage<strong>${percent}%</strong></div><div class="stat">Correct<strong class="good">${correct}</strong></div><div class="stat">Wrong<strong class="bad">${wrong}</strong></div><div class="stat">Skipped<strong>${unanswered}</strong></div>`;
+ $('review').innerHTML=questions.map((q,i)=>`<tr><td>${i+1}</td><td><b>${escapeHtml(q.question)}</b><div class="muted">${escapeHtml(q.explanation||'')}</div><span class="badge">${escapeHtml(q.difficulty||'Practice')}</span></td><td>${answers[i]===null?'—':String.fromCharCode(65+answers[i])+'. '+escapeHtml(q.options[answers[i]])}</td><td>${String.fromCharCode(65+q.correctIndex)+'. '+escapeHtml(q.options[q.correctIndex])}</td><td class="${answers[i]===q.correctIndex?'good':answers[i]===null?'':'bad'}">${answers[i]===q.correctIndex?'Correct':answers[i]===null?'Skipped':'Wrong'}</td></tr>`).join('');
+ try{const r=await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({student:$('student').value,grade:activeTest.grade,subject:activeTest.subject,chapter:activeTest.chapter,score:correct,total:questions.length,correct,wrong,unanswered,percent,durationSeconds})});if(!r.ok)throw new Error();}catch(e){console.warn('Could not save result to shared leaderboard.')}
+}
+$('print').onclick=()=>window.print();$('another').onclick=()=>{if(tick)clearInterval(tick);$('results').classList.add('hidden');$('setup').classList.remove('hidden');status($('setupStatus'),'Choose another chapter and generate a new test.','ok')};
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));$('testView').classList.toggle('hidden',b.dataset.tab!=='testView');$('leaderboardView').classList.toggle('hidden',b.dataset.tab!=='leaderboardView');if(b.dataset.tab==='leaderboardView')loadLeaderboard()});
+$('filterGrade').onchange=loadLeaderboard;
+async function loadLeaderboard(){status($('leaderStatus'),'Loading results…');try{let url='/api/leaderboard'+($('filterGrade').value?'?grade='+encodeURIComponent($('filterGrade').value):'');let rows=await fetch(url).then(r=>r.json());$('leaderRows').innerHTML=rows.map((r,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(r.student)}</td><td>${escapeHtml(r.grade)}</td><td>${escapeHtml(r.subject)}<br><span class="muted">${escapeHtml(r.chapter)}</span></td><td>${r.score}/${r.total}</td><td><b>${r.percent}%</b></td><td>${new Date(r.createdAt).toLocaleDateString()}</td></tr>`).join('');status($('leaderStatus'),rows.length?`${rows.length} result(s) · Sorted by percentage, then score and time.`:'No results yet. Complete a test to appear here.',rows.length?'ok':'')}catch(e){status($('leaderStatus'),'Could not load leaderboard.','error')}}
+init();
+</script></body></html>
